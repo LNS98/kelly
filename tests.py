@@ -1,6 +1,7 @@
 import kelly
 import timeit
 import math
+import pytest
 
 
 def test_kelly_basic():
@@ -18,6 +19,25 @@ def test_kelly_basic():
 
     stake = kelly.calculate_kelly_stake(**kwargs)
     print("Basic test - stake:", stake)
+    assert stake > 0, "Stake should be greater than 0"
+    assert stake <= kwargs["bankroll"], "Stake should not exceed bankroll"
+
+
+def test_liab_large_than_bank():
+    kwargs = {
+        "price": 95,
+        "is_back": False,
+        "probability": 1/100,
+        "other_probabilities": [99/100],
+        "position": 0.0,
+        "other_positions": [0.0],
+        "bankroll": 10.0,
+        "kelly_fraction": 1.0,
+        "verbose": False,
+    }
+
+    stake = kelly.calculate_kelly_stake(**kwargs)
+    print("Large liab test - stake:", stake)
     assert stake > 0, "Stake should be greater than 0"
     assert stake <= kwargs["bankroll"], "Stake should not exceed bankroll"
 
@@ -100,6 +120,7 @@ def test_kelly_zero_bankroll():
     ), "Stake should be close to 0 when bankroll is 0"
 
 
+@pytest.mark.benchmark
 def benchmark_kelly():
     kwargs = {
         "price": 4.0,
@@ -120,15 +141,3 @@ def benchmark_kelly():
     print(
         f"Benchmark: Average time over 10000 runs: {execution_time:.6f} ms"
     )
-
-
-if __name__ == "__main__":
-    # Run all tests
-    test_kelly_basic()
-    test_kelly_edge_case_zero_probability()
-    test_kelly_fractional_stake()
-    test_kelly_high_bankroll()
-    test_kelly_zero_bankroll()
-
-    # Benchmark the function
-    benchmark_kelly()
