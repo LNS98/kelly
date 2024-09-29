@@ -120,8 +120,7 @@ def test_kelly_zero_bankroll():
     ), "Stake should be close to 0 when bankroll is 0"
 
 
-@pytest.mark.benchmark
-def benchmark_kelly():
+def test_benchmark_kelly():
     kwargs = {
         "price": 4.0,
         "is_back": True,
@@ -134,7 +133,8 @@ def benchmark_kelly():
         "verbose": False,
     }
 
-    # Benchmarking using timeit
+    # benchmarking using timeit
+    # NOTE:: could move to pytest-benchmark but might not be worth the hassle
     execution_time = timeit.timeit(
         lambda: kelly.calculate_kelly_stake(**kwargs), number=10000
     )
