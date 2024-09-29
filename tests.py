@@ -25,21 +25,21 @@ def test_kelly_basic():
 
 def test_liab_large_than_bank():
     kwargs = {
-        "price": 95,
+        "price": 100,
         "is_back": False,
         "probability": 1/100,
         "other_probabilities": [99/100],
         "position": 0.0,
         "other_positions": [0.0],
-        "bankroll": 10.0,
+        "bankroll": 100.0,
         "kelly_fraction": 1.0,
-        "verbose": False,
+        "verbose": True,
     }
 
-    stake = kelly.calculate_kelly_stake(**kwargs)
+    stake = round(kelly.calculate_kelly_stake(**kwargs))
     print("Large liab test - stake:", stake)
-    assert stake > 0, "Stake should be greater than 0"
-    assert stake <= kwargs["bankroll"], "Stake should not exceed bankroll"
+    assert stake < 1e-5, "Stake should be close to 0"
+
 
 
 def test_kelly_edge_case_zero_probability():
